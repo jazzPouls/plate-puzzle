@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>Plates</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style type="text/css">
+      #login, #loggedin {
+        display: none;
+      }
+      .text-overflow {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 500px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="puzzle">
+        <h1>Puzzlized Plates</h1>
+        <a href="/puzzle" class="btn btn-primary">START</a>
+        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+      </div>
+    </div>
+  </body>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script>
+    (function() {
+      document.getElementById('obtain-playlists').addEventListener('click', function() {
+        $.ajax({
+            url: '/puzzle',
+            data: {
+              template: '1ABC234'
+            },
+            dataType: 'json',
+            success: function(response) {
+              playlistPlaceholder.innerHTML = playlistTemplate(response);
+            }
+        });
+      }, false);
+    })(); 
+  </script>
+</html>
