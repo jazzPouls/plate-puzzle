@@ -1,3 +1,8 @@
+//List of features to add:
+// look up words
+// choose any random state license plate
+// enter in custom license plate
+
 var express = require('express'); // Express web server framework
 var request = require('request');
 var path = require('path');
@@ -11,10 +16,37 @@ function PuzzleGenerator() {
         if (!template) {
             this.template = template;
         }
-        license = makeLicense(template);
-        console.log(license);
+        lic = makeLicense(template);
+        var sol = solvePuzzle(lic);
+        puzzle = {
+            license:lic,
+            solution:sol
+        }
+        return puzzle
 
     };
+
+    var solvePuzzle = function(license) {
+        var rgx = '\\b' + license.replace(/[0-9]/g,'').replace(/(\w)/g,'$1\\w*') + '\\b';
+        var res = raw_dict.match(new RegExp(rgx, 'g'));
+        var strict = true
+        if (!res) {                                         // if not strict solution, allow leading characters
+                                                            // e.g. XBM => EXHIBITIONISM
+            var rgx_loose = '\\b\\w*' + license.replace(/[0-9]/g,'').replace(/(\w)/g,'$1\\w*') + '\\b';
+            var res_loose = raw_dict.match(new RegExp(rgx_loose, 'g'));
+            if (!res_loose) {
+                console.log('No solution');
+                return null;
+            }
+            console.log('Loose solution found');
+            strict = false
+            res = res_loose
+        }
+        res.sort(function(a,b) {
+            return a.length-b.length
+        })
+        return {solutions: res, strict: strict}
+    }
 
     var makeLicense = function(template) {
         var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -37,23 +69,14 @@ var puzzleGenerator = new PuzzleGenerator();
 var app = express()
 app.use(express.static(__dirname + '/public'))
 
+var raw_dict = '';
+var words = new Array();
+
 fs.readFile(__dirname + '/public/dict/dictionary.txt', 'utf8', function(err, data) {
   if (err) throw err;
-  var lines = data.split(/\r?\n/);
-  console.log(data)
+  raw_dict = data
+  words = data.split(/\r?\n/);
 });
-
-request.get(__dirname + '/public/dict/dictionary.txt', function (error, response, body) {
-    if (error || response.statusCode !== 200) {
-        throw error
-    }
-    var csv = body.split('/n/r');
-    console.log(csv[10])
-});
-
-// app.get('/', (req,res) => {
-//  res.sendFile(path.join(__dirname + '/public/index.html'));
-// });
 
 app.get('/puzzle', (req,res) => {
     var puzzle = puzzleGenerator.newPuzzle(req.query.template)

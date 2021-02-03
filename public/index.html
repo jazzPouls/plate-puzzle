@@ -17,19 +17,42 @@
 
   <body>
     <div class="container">
-      <div id="puzzle">
+      <div>
         <h1>Puzzlized Plates</h1>
-        <a id="a" class="btn btn-primary">START</a>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        <button class="btn btn-default" id="generate">GENERATE</button>
+      </div>
+      <div id="puzzlePlaceholder">
       </div>
     </div>
   </body>
+
+  <script id="puzzle-template" type="text/x-handlebars-template">
+    <h2>puzzle generated:</h2>
+    <dl class="dl-horizontal">
+      <dt>Access token</dt><dd class="text-overflow">{{license}}</dd>
+      <input type="text" id="guess">
+      <button id="check-guess">Check</button>
+      <button id="reveal-solutions">Reveal answers</button>
+      <ul class="solution-list">
+        {{#each solution.solutions}}
+        <li><a class="btn btn-default" id="{{this}}">{{this}}</a></li>
+        {{/each}}
+    </ul>
+    </dl>
+  </script>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
   <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
   <script>
     (function() {
-      document.getElementById('a').addEventListener('click', function() {
+
+      var puzzleHBSource = document.getElementById('puzzle-template').innerHTML,
+          puzzleTemplate = Handlebars.compile(puzzleHBSource),
+          puzzlePlaceholder = document.getElementById('puzzlePlaceholder');
+
+
+
+      document.getElementById('generate').addEventListener('click', function() {
         $.ajax({
             url: '/puzzle',
             data: {
@@ -37,9 +60,18 @@
             },
             // dataType: 'json',
             success: function(response) {
+              console.log(response)
+              puzzlePlaceholder.innerHTML = puzzleTemplate(response);
+              
+              document.getElementById('reveal-solutions').addEventListener('click', function() {
+                $('#solution-list').show();
+              }, false);
+              $('#solution-list').hide()
             }
         });
       }, false);
+
+
     })(); 
   </script>
 </html>
