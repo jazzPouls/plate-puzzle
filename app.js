@@ -1,30 +1,40 @@
 //List of features to add:
-// look up words
+// look up word definitions
 // choose any random state license plate
-// enter in custom license plate
+// add client side dictionary
+// reveal / hide answers
+// make local client side copy of puzzle
+// sort guesses by length
 
 var express = require('express'); // Express web server framework
-var request = require('request');
 var path = require('path');
 var fs = require('fs');
 
 function PuzzleGenerator() {
-    var puzzle = {};
+    this.puzzle = null;
     this.template = '1AAA111';
 
     this.newPuzzle = function(template) {
         if (template) {
-            this.template = template;
+            this.template = template
         }
-        lic = makeLicense(template);
-        var sol = solvePuzzle(lic);
-        puzzle = {
+        var lic = this.generateRandomLicense();
+        this.puzzle = {
             license:lic,
-            solution:sol
+            solution:solvePuzzle(lic)
         }
-        return puzzle
+        return this.puzzle
 
     };
+
+    this.solveCustomPuzzle = function(custom_license) {
+        this.puzzle = {
+            license: custom_license,
+            solution: solvePuzzle(custom_license)
+        }
+        return this.puzzle
+
+    }
 
     var solvePuzzle = function(license) {
         var rgx = '\\b' + license.replace(/[0-9]/g,'').replace(/(\w)/g,'$1\\w*') + '\\b';
@@ -44,14 +54,14 @@ function PuzzleGenerator() {
         return {solutions: res, solution_type: solution_type}
     }
 
-    var makeLicense = function(template) {
+    this.generateRandomLicense = function() {
         var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var license = '';
-        for (let i = 0; i<template.length; i++) {
-            if (template.charAt(i).isletter()) {
+        for (let i = 0; i<this.template.length; i++) {
+            if (this.template.charAt(i).isletter()) {
                 var seed = Math.floor(Math.random()*letters.length);
                 license += letters[seed];
-            } else if (template.charAt(i).isdigit()) {
+            } else if (this.template.charAt(i).isdigit()) {
                 license += Math.floor(Math.random()*10);
             }
         }
@@ -72,8 +82,15 @@ fs.readFile(__dirname + '/public/dict/dictionary.txt', 'utf8', function(err, dat
 });
 
 app.get('/puzzle', (req,res) => {
-    var puzzle = puzzleGenerator.newPuzzle(req.query.template)
-    res.send(puzzle)
+    res.send(puzzleGenerator.puzzle)
+});
+
+app.get('/newpuzzle', (req,res) => {
+    res.send(puzzleGenerator.newPuzzle(req.query.template));
+});
+
+app.get('/solvecustom', (req,res) => {
+    res.send(puzzleGenerator.solveCustomPuzzle(req.query.custom_license));
 });
 
 app.listen(8888)
