@@ -13,7 +13,7 @@ function PuzzleGenerator() {
     this.template = '1AAA111';
 
     this.newPuzzle = function(template) {
-        if (!template) {
+        if (template) {
             this.template = template;
         }
         lic = makeLicense(template);
@@ -29,23 +29,19 @@ function PuzzleGenerator() {
     var solvePuzzle = function(license) {
         var rgx = '\\b' + license.replace(/[0-9]/g,'').replace(/(\w)/g,'$1\\w*') + '\\b';
         var res = raw_dict.match(new RegExp(rgx, 'g'));
-        var strict = true
+        var solution_type = 'strict';
         if (!res) {                                         // if not strict solution, allow leading characters
                                                             // e.g. XBM => EXHIBITIONISM
             var rgx_loose = '\\b\\w*' + license.replace(/[0-9]/g,'').replace(/(\w)/g,'$1\\w*') + '\\b';
             var res_loose = raw_dict.match(new RegExp(rgx_loose, 'g'));
             if (!res_loose) {
-                console.log('No solution');
-                return null;
+                return {solutions: ['No solution'], solution_type: null};
             }
-            console.log('Loose solution found');
-            strict = false
+            solution_type = 'loose'
             res = res_loose
         }
-        res.sort(function(a,b) {
-            return a.length-b.length
-        })
-        return {solutions: res, strict: strict}
+        res.sort(function(a,b) {return a.length-b.length});
+        return {solutions: res, solution_type: solution_type}
     }
 
     var makeLicense = function(template) {
@@ -70,12 +66,9 @@ var app = express()
 app.use(express.static(__dirname + '/public'))
 
 var raw_dict = '';
-var words = new Array();
-
 fs.readFile(__dirname + '/public/dict/dictionary.txt', 'utf8', function(err, data) {
   if (err) throw err;
   raw_dict = data
-  words = data.split(/\r?\n/);
 });
 
 app.get('/puzzle', (req,res) => {
@@ -84,11 +77,6 @@ app.get('/puzzle', (req,res) => {
 });
 
 app.listen(8888)
-
-
-
-
-
 
 String.prototype.isletter = function() {
     return ((this >= 'A') && (this <= 'Z'));

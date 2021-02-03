@@ -29,11 +29,15 @@
   <script id="puzzle-template" type="text/x-handlebars-template">
     <h2>puzzle generated:</h2>
     <dl class="dl-horizontal">
-      <dt>Access token</dt><dd class="text-overflow">{{license}}</dd>
-      <input type="text" id="guess">
+      <input type="text" id="license"/>
+      <button id="solve">Solve</button>
+      <br>
+      <input type="text" id="guess" style="text-transform:uppercase">
       <button id="check-guess">Check</button>
+      <br>
       <button id="reveal-solutions">Reveal answers</button>
-      <ul class="solution-list">
+      <ul id="guess-list"></ul>
+      <ul id="solution-list">
         {{#each solution.solutions}}
         <li><a class="btn btn-default" id="{{this}}">{{this}}</a></li>
         {{/each}}
@@ -50,23 +54,33 @@
           puzzleTemplate = Handlebars.compile(puzzleHBSource),
           puzzlePlaceholder = document.getElementById('puzzlePlaceholder');
 
-
-
       document.getElementById('generate').addEventListener('click', function() {
         $.ajax({
             url: '/puzzle',
             data: {
               template: '1ABC234'
             },
-            // dataType: 'json',
             success: function(response) {
-              console.log(response)
               puzzlePlaceholder.innerHTML = puzzleTemplate(response);
-              
+              var sol = response.solution
+              $('#license').val(response.license)
+
+              document.getElementById('check-guess').addEventListener('click', function() {
+                var guess = $('#guess').val();
+                if (sol.solution_type && sol.solutions.indexOf(guess) !== -1) {
+                    var ul = document.getElementById("guess-list")
+                    var li = document.createElement('li');
+                    li.appendChild(document.createTextNode(guess));
+                    ul.appendChild(li);
+                } else {
+                    $('#guess').val('');
+                }
+              }, false);
+
+              $('#solution-list').hide();
               document.getElementById('reveal-solutions').addEventListener('click', function() {
                 $('#solution-list').show();
               }, false);
-              $('#solution-list').hide()
             }
         });
       }, false);
