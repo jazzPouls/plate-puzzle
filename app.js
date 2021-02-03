@@ -2,12 +2,11 @@
 // look up word definitions
 // choose any random state license plate
 // add client side dictionary
-// reveal / hide answers
-// make local client side copy of puzzle
+// solve new input in license if reveal button is hit
+// save local client side copy of puzzle
 // sort guesses by length
 
 var express = require('express'); // Express web server framework
-var path = require('path');
 var fs = require('fs');
 
 function PuzzleGenerator() {
