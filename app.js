@@ -30,10 +30,3 @@ const port = process.env.PORT || 8888;
 const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
-
-String.prototype.isletter = function() {
-    return ((this >= 'A') && (this <= 'Z'));
-}
-String.prototype.isdigit = function() {
-    return ((this >= '0') && (this <= '9'));
-}

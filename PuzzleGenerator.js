@@ -64,3 +64,11 @@ module.exports = function PuzzleGenerator() {
     }
 
 }
+
+
+String.prototype.isletter = function() {
+    return ((this >= 'A') && (this <= 'Z'));
+}
+String.prototype.isdigit = function() {
+    return ((this >= '0') && (this <= '9'));
+}
