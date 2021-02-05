@@ -3,6 +3,7 @@ var puzzleHBSource = document.getElementById('puzzle-template').innerHTML,
     puzzlePlaceholder = document.getElementById('puzzlePlaceholder');
 
 var guessed = new Array();
+var current_puzzle = null;
 
 initHTML();
 
@@ -27,10 +28,9 @@ async function getPuzzle() {
   return await callAPI('/puzzle');
 }
 
-async function checkGuess() {
+async function checkGuess(guess) {
   var puzzle = await getPuzzle();
   var sol = puzzle.solution;
-  var guess = $('#guess').val().toUpperCase();
   
   console.log(puzzle)
   console.log(guess)
@@ -38,11 +38,21 @@ async function checkGuess() {
   if (!guessed.includes(guess) && sol.solution_type && sol.solutions.includes(guess)) {
       guessed.push(guess);
       var ul = document.getElementById("guess-list")
-      var li = document.createElement('li');
+      var li = document.createElement('div');
       li.appendChild(document.createTextNode(guess));
       ul.appendChild(li);
   }
   $('#guess').val('');
+}
+
+function guessButton() {
+  checkGuess($('#guess').val().toUpperCase());
+}
+
+function guessEnter(input) {
+  if (event.key === 'Enter') {
+    checkGuess(input.value.toUpperCase());
+  }
 }
 
 async function initHTML() {
@@ -56,7 +66,6 @@ async function initHTML() {
     } else {
       $('#solution-list').hide();
     }
-    
   }, false);
 
   updateHTML(await puzzlePromise);
@@ -65,6 +74,7 @@ async function initHTML() {
 function updateHTML(puzzle) {
   puzzlePlaceholder.innerHTML = puzzleTemplate(puzzle);
   $('#license').val(puzzle.license);
+  $('#guess').focus()
   $('#solution-list').hide();
 }
 
@@ -81,3 +91,18 @@ async function callAPI(url,data) {
     throw err;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -65,7 +65,6 @@ module.exports = function PuzzleGenerator() {
 
 }
 
-
 String.prototype.isletter = function() {
     return ((this >= 'A') && (this <= 'Z'));
 }

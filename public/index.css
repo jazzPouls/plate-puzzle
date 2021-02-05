@@ -1,0 +1,37 @@
+@font-face {
+	src: url(fonts/dealerplate.woff2),
+			url(fonts/dealerplate.woff),
+			url(fonts/dealerplate.ttf);
+  	font-family: LicenseFont;
+}
+
+.container {
+	text-align: center;
+}
+
+.license-font {
+	font-family: LicenseFont, serif;
+}
+
+#puzzle {
+	margin: 0 auto;
+	width: 50%;
+	border:1px solid black;
+	border-radius: 20px;
+}
+
+input {
+  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  width: auto;
+  text-align: center;
+  text-transform:uppercase;
+
+}
+
+input:focus {
+    outline: none;
+}

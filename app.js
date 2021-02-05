@@ -11,6 +11,7 @@ var PuzzleGenerator = require('./PuzzleGenerator.js')
 
 var app = express()
 app.use(express.static(__dirname + '/public'))
+app.use(express.static("public"));
 
 var puzzleGenerator = new PuzzleGenerator();
 

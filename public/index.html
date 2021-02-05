@@ -2,10 +2,8 @@
   <head>
     <title>Plates</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
     <style type="text/css">
-      #login, #loggedin {
-        display: none;
-      }
       .text-overflow {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -16,7 +14,7 @@
   </head>
 
   <body>
-    <div class="container">
+    <div id="container" class="container">
       <div>
         <h1>Puzzlized Plates</h1>
         <button class="btn btn-default" id="generate">GENERATE</button>
@@ -34,18 +32,23 @@
   <script id="puzzle-template" type="text/x-handlebars-template">
     <h2>puzzle generated:</h2>
     <dl class="dl-horizontal">
-      <h4>Plate #: </h4>
-      <input type="text" id="license" style="text-transform:uppercase"/>
+      <div id="puzzle">
+        <h4>Plate #: </h4>
+        <input type="text" id="license" class="license-font"/>
+      </div>
       <br>
-      <h4>Your guess: </h4>
-      <input type="text" id="guess" style="text-transform:uppercase">
+      <div>
+        <h4>Your guess: </h4>
+        <input type="text" id="guess" class="license-font" onkeydown="guessEnter(this)">
+      </div>
       <br>
-      <ul id="guess-list"></ul>
-      <ul id="solution-list">
+      <div id="guess-list">
+      </div>
+      <div id="solution-list">
         {{#each solution.solutions}}
-        <li><a class="btn btn-default" id="{{this}}">{{this}}</a></li>
+        <a class="btn btn-default license-font" id="{{this}}">{{this}}</a><br>
         {{/each}}
-    </ul>
+      </div>
     </dl>
   </script>
 
