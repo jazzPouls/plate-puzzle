@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 module.exports = function PuzzleGenerator() {
-    this.puzzle = null;
+    // this.puzzle = null;
     this.template = '1AAA111';
     var dict = '';
     fs.readFile(__dirname + '/public/dict/dictionary.txt', 'utf8', function(err, data) {
@@ -14,20 +14,18 @@ module.exports = function PuzzleGenerator() {
             this.template = template
         }
         var lic = this.generateRandomLicense();
-        this.puzzle = {
+        return {
             license:lic,
             solution:solvePuzzle(lic)
         }
-        return this.puzzle
 
     };
 
     this.solveCustomPuzzle = function(custom_license) {
-        this.puzzle = {
+        return {
             license: custom_license,
             solution: solvePuzzle(custom_license)
         }
-        return this.puzzle
 
     }
 

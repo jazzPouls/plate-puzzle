@@ -6,6 +6,9 @@
 // save local client side copy of puzzle
 // sort guesses by length
 
+// This is a word puzzle game that I came up with based on the 3 random letters in CA license plates.
+// Find the shortest word that starts with the first letter and contains the second two in order.
+
 var express = require('express'); // Express web server framework
 var PuzzleGenerator = require('./PuzzleGenerator.js')
 
@@ -16,7 +19,7 @@ app.use(express.static("public"));
 var puzzleGenerator = new PuzzleGenerator();
 
 app.get('/puzzle', (req,res) => {
-    res.send(puzzleGenerator.puzzle)
+    res.send(puzzleGenerator.puzzle);
 });
 
 app.get('/newpuzzle', (req,res) => {

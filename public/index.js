@@ -3,33 +3,27 @@ var puzzleHBSource = document.getElementById('puzzle-template').innerHTML,
     puzzlePlaceholder = document.getElementById('puzzlePlaceholder');
 
 var guessed = new Array();
-var current_puzzle = null;
+var puzzle = null;
 
 initHTML();
 
 async function generateAndUpdate() {
-  var newPuzzle = await generateNewPuzzle();
-  updateHTML(newPuzzle);
+  await generateNewPuzzle();
+  updateHTML();
 }
 
 async function solveCustomLicense() {
   var custom_license = $('#license').val().toUpperCase();
   var data = {custom_license: custom_license}
-  var solvedCustom = await callAPI('/solvecustom', data);
-  console.log(solvedCustom)
-  updateHTML(solvedCustom);
+  puzzle = await callAPI('/solvecustom', data);
+  updateHTML();
 }
 
-async function generateNewPuzzle() {
-  return await callAPI('/newpuzzle');
+function define(word) {
+  url = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/voluminous?key=f52ea987-4e89-4af4-a94e-6aae3f5f78cc'
 }
 
-async function getPuzzle() {
-  return await callAPI('/puzzle');
-}
-
-async function checkGuess(guess) {
-  var puzzle = await getPuzzle();
+function checkGuess(guess) {
   var sol = puzzle.solution;
   
   console.log(puzzle)
@@ -55,10 +49,16 @@ function guessEnter(input) {
   }
 }
 
+function customEnter(input) {
+  if (event.key === 'Enter') {
+    solveCustomLicense(input.value.toUpperCase());
+  }
+}
+
 async function initHTML() {
-  var puzzlePromise = generateNewPuzzle();
+  var puzzlePromise = callAPI('/newpuzzle');
+
   document.getElementById('generate').addEventListener('click', generateAndUpdate, false);
-  document.getElementById('check-guess').addEventListener('click', checkGuess, false);
   document.getElementById('solve').addEventListener('click', solveCustomLicense, false);
   document.getElementById('reveal-solutions').addEventListener('click', function() {
     if ( $('#solution-list').css('display') == 'none' || $('#solution-list').css("visibility") == "hidden") {
@@ -68,14 +68,19 @@ async function initHTML() {
     }
   }, false);
 
-  updateHTML(await puzzlePromise);
+  puzzle = await puzzlePromise;
+  updateHTML();
 }
-
-function updateHTML(puzzle) {
+  
+function updateHTML() {
   puzzlePlaceholder.innerHTML = puzzleTemplate(puzzle);
   $('#license').val(puzzle.license);
   $('#guess').focus()
   $('#solution-list').hide();
+}
+
+async function generateNewPuzzle() {
+  puzzle = await callAPI('/newpuzzle');
 }
 
 async function callAPI(url,data) {

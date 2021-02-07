@@ -1,6 +1,7 @@
 <html>
   <head>
-    <title>Plates</title>
+    <title>Puzzlized Plates</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="index.css">
     <style type="text/css">
@@ -15,28 +16,22 @@
 
   <body>
     <div id="container" class="container">
-      <div>
-        <h1>Puzzlized Plates</h1>
-        <button class="btn btn-default" id="generate">GENERATE</button>
-      </div>
       <div id="controls">
-        <button id="check-guess">Check</button>
-        <button id="solve">Solve</button>
-        <button id="reveal-solutions">Show/hide answers</button>
+        <button id="generate" class="btn btn-default">NEW</button>
+        <button id="solve" class="btn btn-default">SOLVE</button>
+        <button id="reveal-solutions" class="btn btn-default">ANSWERS</button>
       </div>
       <div id="puzzlePlaceholder">
       </div>
     </div>
+    <a href="https://www.openode.io/">Cloud hosted on opeNode.io</a>
   </body>
 
   <script id="puzzle-template" type="text/x-handlebars-template">
-    <h2>puzzle generated:</h2>
     <dl class="dl-horizontal">
       <div id="puzzle">
-        <h4>Plate #: </h4>
-        <input type="text" id="license" class="license-font"/>
+        <input type="text" id="license" class="license-font" onkeydown="customEnter(this)"/>
       </div>
-      <br>
       <div>
         <h4>Your guess: </h4>
         <input type="text" id="guess" class="license-font" onkeydown="guessEnter(this)">
