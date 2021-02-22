@@ -1,5 +1,12 @@
+// tes server 
+//nodemon app.js
+
+//deploy 
+//openode deploy
+
 //List of features to add:
 // look up word definitions
+// easy mode = allow letters in front
 // choose any random state license plate
 // add client side dictionary
 // solve new input in license if reveal button is hit
@@ -31,7 +38,7 @@ app.get('/solvecustom', (req,res) => {
     res.send(puzzleGenerator.solveCustomPuzzle(req.query.custom_license));
 });
 
-const port = process.env.PORT || 8888;
+const port = process.env.PORT || 8000;
 const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
